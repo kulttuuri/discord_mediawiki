@@ -125,12 +125,12 @@ class DiscordNotificationsCore {
 			return;
 		}
 
-		$message = self::msg(
-			'discordnotifications-article-saved',
+		$message = wfMessage( 'discordnotifications-article-saved' )->plaintextParams(
 			self::getDiscordUserText( $user ),
 			$isMinor == true ? self::msg( 'discordnotifications-article-saved-minor-edits' ) : self::msg( 'discordnotifications-article-saved-edit' ),
 			self::getDiscordArticleText( $article, true ),
-			$summary == "" ? "" : self::msg( 'discordnotifications-summary', $summary ) );
+			$summary == "" ? "" : wfMessage( 'discordnotifications-summary', $summary )->inContentLanguage()->plain()
+		)->inContentLanguage()->text();
 		if ( $wgDiscordIncludeDiffSize ) {
 			$message .= ' (' . self::msg( 'discordnotifications-bytes',
 				$article->getRevision()->getSize() - $article->getRevision()->getPrevious()->getSize() ) . ')';
@@ -158,10 +158,11 @@ class DiscordNotificationsCore {
 		// Do not announce newly added file uploads as articles...
 		if ( $article->getTitle()->getNsText() == self::msg( 'discordnotifications-file-namespace' ) ) return true;
 
-		$message = self::msg( 'discordnotifications-article-created',
+		$message = wfMessage( 'discordnotifications-article-created' )->plaintextParams(
 			self::getDiscordUserText( $user ),
 			self::getDiscordArticleText( $article ),
-			$summary == "" ? "" : self::msg( 'discordnotifications-summary', $summary ) );
+			$summary == "" ? "" : wfMessage( 'discordnotifications-summary', $summary )->inContentLanguage()->plain()
+		)->inContentLanguage()->text();
 		if ( $wgDiscordIncludeDiffSize ) {
 			$message .= " (" . self::msg( 'discordnotifications-bytes', $article->getRevision()->getSize() ) . ")";
 		}
@@ -188,10 +189,11 @@ class DiscordNotificationsCore {
 			}
 		}
 
-		$message = self::msg( 'discordnotifications-article-deleted',
+		$message = wfMessage( 'discordnotifications-article-deleted' )->plaintextParams(
 			self::getDiscordUserText( $user ),
 			self::getDiscordArticleText( $article ),
-			$reason );
+			$reason
+		)->inContentLanguage()->text();
 		self::pushDiscordNotify( $message, $user, 'article_deleted' );
 		return true;
 	}
